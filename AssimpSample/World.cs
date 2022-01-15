@@ -36,7 +36,7 @@ namespace AssimpSample
         private enum TextureObjects { Grass = 0, YellowPlastic, GolfBall };
         private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
         private uint[] m_textures = null;
-        private string[] m_textureFiles = { "..//..//images//grass.jpg", "..//..//images//plastic.jpg", "..//..//images//golfBall.jpg" };
+        private string[] m_textureFiles = { "..//..//images//grass1.jpg", "..//..//images//plastic.jpg", "..//..//images//golfBall.jpg" };
 
         // Scena koja se prikazuje.
         private AssimpScene m_golf_club;
@@ -360,6 +360,7 @@ namespace AssimpSample
                     stick.TopRadius = 0.3f;
                     stick.Height = 40f;
                     stick.CreateInContext(gl);
+                    stick.TextureCoords = true;
                     stick.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
                     gl.PopMatrix();
                     gl.Enable(OpenGL.GL_CULL_FACE);
@@ -403,6 +404,7 @@ namespace AssimpSample
                     gl.Color(1f, 1f, 1f);
                     Sphere ball = new Sphere();
                     ball.CreateInContext(gl);
+                    ball.TextureCoords = true;
                     ball.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
                     gl.PopMatrix();
                     #endregion

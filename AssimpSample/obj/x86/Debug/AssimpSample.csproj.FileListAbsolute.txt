@@ -124,7 +124,6 @@ D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\obj\x86\Debug\Ass
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\AssimpLib\Assimp32.dll
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\AssimpLib\Assimp64.dll
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\AssimpLib\AssimpNet.dll
-D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\3D Models\Touareg\Touareg.3DS
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\AssimpSample.exe.config
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\AssimpSample.exe
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\AssimpSample.pdb
@@ -136,4 +135,4 @@ D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\obj\x86\Debug\Ass
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\obj\x86\Debug\AssimpSample.csproj.GenerateResource.cache
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\obj\x86\Debug\AssimpSample.csproj.CoreCompileInputs.cache
 D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\obj\x86\Debug\AssimpSample.csproj.CopyComplete
-D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\3D Models\GolfClub\source2\Golfclub.dae
+D:\Ana\FTN\Racunarska grafika\Vezbe\Projekat\Golf\AssimpSample\bin\Debug\3D Models\GolfClub\source\Golfclub.dae

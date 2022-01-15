@@ -38,7 +38,7 @@ namespace AssimpSample
             try
             {
                 var currentPath = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString();
-                m_world = new World(Path.Combine(currentPath, "3D Models\\GolfClub\\source2"), "Golfclub.dae", 
+                m_world = new World(Path.Combine(currentPath, "3D Models\\GolfClub\\source"), "Golfclub.dae", 
                                     (int)openGLControl.ActualWidth, (int)openGLControl.ActualHeight, openGLControl.OpenGL);
             }
             catch (Exception e)

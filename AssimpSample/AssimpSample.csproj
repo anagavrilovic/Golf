@@ -108,25 +108,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="3D Models\Duck\duck.dae" />
-    <None Include="3D Models\Duck\Thumbs.db" />
-    <None Include="3D Models\GolfClub1\10508_Golf Club - Driver_Diffuse_v2_L3.mtl" />
-    <None Include="3D Models\GolfClub1\10508_Golf Club - Driver_Diffuse_v2_L3.obj" />
-    <None Include="3D Models\GolfClub2\driver.FBX" />
-    <None Include="3D Models\GolfClub2\driver.obj" />
-    <None Include="3D Models\GolfClub2\iron.FBX" />
-    <None Include="3D Models\GolfClub2\iron.obj" />
-    <None Include="3D Models\GolfClub2\putter.FBX" />
-    <None Include="3D Models\GolfClub2\putter.obj" />
-    <None Include="3D Models\GolfClub\source2\Golfclub.dae">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="3D Models\GolfClub\source\Golfclub.dae" />
-    <None Include="3D Models\GolfClub\source\Golfclub.fbx" />
-    <None Include="3D Models\Grass\grass01.3ds" />
-    <None Include="3D Models\Grass\grass02.3ds" />
-    <None Include="3D Models\Grass\grass03.3ds" />
-    <None Include="3D Models\Touareg\Touareg.3DS">
+    <None Include="3D Models\GolfClub\source\Golfclub.dae">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="app.config" />
@@ -142,27 +124,16 @@
     <None Include="Dependencies\SharpGL.WPF.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="3D Models\Duck\duckCM.bmp" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="images\grass1.jpg" />
     <Resource Include="images\golfBall.jpg" />
     <Resource Include="images\plastic.jpg" />
     <Resource Include="images\grass.jpg" />
-    <Resource Include="3D Models\GolfClub1\10508_Golf Club - Driver_Diffuse_v01.jpg" />
-    <Resource Include="3D Models\GolfClub2\pics\Golf Clubs.jpg" />
-    <Resource Include="3D Models\GolfClub2\pics\Golf Clubs2.jpg" />
-    <Resource Include="3D Models\GolfClub2\tex\golf_diffuse_no_ao.jpg" />
-    <Resource Include="3D Models\GolfClub2\tex\pool_stick_diffuse_no_ao.jpg" />
-    <Resource Include="3D Models\GolfClub\source\texture_1.png" />
-    <Resource Include="3D Models\GolfClub\source\texture_2.png" />
-    <Resource Include="3D Models\GolfClub\source2\texture_1.png">
+    <Resource Include="3D Models\GolfClub\source\texture_1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="3D Models\GolfClub\source2\texture_2.png">
+    <Resource Include="3D Models\GolfClub\source\texture_2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="3D Models\Grass\grass01.png" />
-    <Resource Include="3D Models\Grass\grass02.png" />
     <Content Include="AssimpLib\Assimp32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
