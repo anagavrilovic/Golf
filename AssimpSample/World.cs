@@ -6,18 +6,12 @@
 // <summary>Klasa koja enkapsulira OpenGL programski kod.</summary>
 // -----------------------------------------------------------------------
 using System;
-using Assimp;
-using System.IO;
-using System.Reflection;
-using SharpGL.SceneGraph;
-using SharpGL.SceneGraph.Primitives;
 using SharpGL.SceneGraph.Quadrics;
-using SharpGL.SceneGraph.Core;
 using SharpGL;
-using SharpGL.Enumerations;
 using SharpGL.SceneGraph.Cameras;
 using System.Windows.Threading;
-using System.Windows;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace AssimpSample
 {
@@ -37,6 +31,12 @@ namespace AssimpSample
         private float ballPosition_x_z = 0f;
         private float ballPosition_y = 0f;
         private bool animationActive = false;
+
+        // Teksture
+        private enum TextureObjects { Grass = 0, YellowPlastic, GolfBall };
+        private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
+        private uint[] m_textures = null;
+        private string[] m_textureFiles = { "..//..//images//grass.jpg", "..//..//images//plastic.jpg", "..//..//images//golfBall.jpg" };
 
         // Scena koja se prikazuje.
         private AssimpScene m_golf_club;
@@ -153,6 +153,7 @@ namespace AssimpSample
             this.m_golf_club = new AssimpScene(scenePath, sceneFileName, gl);
             this.m_width = width;
             this.m_height = height;
+            m_textures = new uint[m_textureCount];
         }
 
         ~World()
@@ -171,22 +172,13 @@ namespace AssimpSample
             gl.ShadeModel(OpenGL.GL_FLAT);
 
             // 1.1 Testiranje dubine i sakrivanje nevidljivih povrsina
-            gl.Enable(OpenGL.GL_DEPTH_TEST);
-            gl.CullFace(OpenGL.GL_BACK);
-            gl.Enable(OpenGL.GL_CULL_FACE);
+            DepthTestingAndFaceCulling(gl);
 
             // 2.1 Color Tracking mehanizam
-            gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
-            gl.Enable(OpenGL.GL_COLOR_MATERIAL);
-
-            float[] whiteLight = { 0.0f, 0.0f, 1.0f, 1.0f };
-            gl.LightModel(LightModelParameter.Ambient, whiteLight);
-
-            gl.ClearColor(0.65f, 0.92f, 0.98f, 1.0f);
+            ColorTrackingMechanism(gl);
 
             // 3D modeli
-            m_golf_club.LoadScene();
-            m_golf_club.Initialize();
+            Initialize3DModels();
 
             // Podesavanje inicijalnih parametara kamere
             /*lookAtCam = new LookAtCamera();
@@ -196,6 +188,35 @@ namespace AssimpSample
             lookAtCam.Project(gl);*/
 
             // Definisanje tajmera za animaciju
+            CreateTimers();
+
+            // Teksture
+            CreateTextures(gl);
+        }
+
+        private static void DepthTestingAndFaceCulling(OpenGL gl)
+        {
+            gl.Enable(OpenGL.GL_DEPTH_TEST);
+            gl.CullFace(OpenGL.GL_BACK);
+            gl.Enable(OpenGL.GL_CULL_FACE);
+        }
+
+        private static void ColorTrackingMechanism(OpenGL gl)
+        {
+            gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
+            gl.Enable(OpenGL.GL_COLOR_MATERIAL);
+
+            gl.ClearColor(0.65f, 0.92f, 0.98f, 1.0f);
+        }
+
+        private void Initialize3DModels()
+        {
+            m_golf_club.LoadScene();
+            m_golf_club.Initialize();
+        }
+
+        private void CreateTimers()
+        {
             timer1 = new DispatcherTimer();
             timer1.Interval = TimeSpan.FromMilliseconds(10);
             timer1.Tick += new EventHandler(RunGolfClubAnimation);
@@ -203,6 +224,37 @@ namespace AssimpSample
             timer2 = new DispatcherTimer();
             timer2.Interval = TimeSpan.FromMilliseconds(7);
             timer2.Tick += new EventHandler(RunBallAnimation);
+        }
+
+        private void CreateTextures(OpenGL gl)
+        {
+            gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_REPLACE);
+
+            gl.GenTextures(m_textureCount, m_textures);
+            for (int i = 0; i < m_textureCount; ++i)
+            {
+                // Pridruzi teksturu odgovarajucem identifikatoru
+                gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[i]);
+
+                // Ucitaj sliku i podesi parametre teksture
+                Bitmap image = new Bitmap(m_textureFiles[i]);
+                // rotiramo sliku zbog koordinantog sistema opengl-a
+                image.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+                // RGBA format (dozvoljena providnost slike tj. alfa kanal)
+                BitmapData imageData = image.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                                                      System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                gl.Build2DMipmaps(OpenGL.GL_TEXTURE_2D, (int)OpenGL.GL_RGBA8, image.Width, image.Height, OpenGL.GL_BGRA, OpenGL.GL_UNSIGNED_BYTE, imageData.Scan0);
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_S, OpenGL.GL_REPEAT);		// Wrapping - GL_REPEAT - S
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_WRAP_T, OpenGL.GL_REPEAT);		// Wrapping - GL_REPEAT - T
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_NEAREST);		// Nearest Filtering
+                gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_NEAREST);		// Nearest Filtering
+
+                image.UnlockBits(imageData);
+                image.Dispose();
+            }
         }
 
         // Iscrtavanje OpenGL kontrole.
@@ -246,13 +298,27 @@ namespace AssimpSample
                     #endregion
 
                 #region Grass
-                gl.Begin(OpenGL.GL_QUADS);
-                gl.Color(0.19f, 0.85f, 0.26f);
-                gl.Vertex(ground_size, 0f, ground_size);
-                gl.Vertex(ground_size, 0f, -ground_size);
-                gl.Vertex(-ground_size, 0f, -ground_size);
-                gl.Vertex(-ground_size, 0f, ground_size);
+                gl.MatrixMode(OpenGL.GL_TEXTURE);
 
+                    gl.PushMatrix();
+                    gl.Scale(1.1f, 1.1f, 1.1f);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Grass]);
+                    gl.Begin(OpenGL.GL_QUADS);
+                    gl.Color(0.19f, 0.85f, 0.26f);
+                    gl.TexCoord(0.0f, 0.0f);
+                    gl.Vertex(ground_size, 0f, ground_size);
+                    gl.TexCoord(0.0f, 1.0f);
+                    gl.Vertex(ground_size, 0f, -ground_size);
+                    gl.TexCoord(1.0f, 1.0f);
+                    gl.Vertex(-ground_size, 0f, -ground_size);
+                    gl.TexCoord(1.0f, 0.0f);
+                    gl.Vertex(-ground_size, 0f, ground_size);
+                    gl.End();
+                    gl.PopMatrix();
+
+                gl.MatrixMode(OpenGL.GL_MODELVIEW);
+
+                gl.Begin(OpenGL.GL_QUADS);
                 gl.Color(0.19f, 0.15f, 0.11f);
                 gl.Vertex(ground_size, 0f, ground_size);
                 gl.Vertex(ground_size, -3f, ground_size);
@@ -283,6 +349,7 @@ namespace AssimpSample
 
                     #region Flag Stick
                     gl.Disable(OpenGL.GL_CULL_FACE);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.YellowPlastic]);
                     gl.PushMatrix();
                     gl.Translate(20f, 0.01f, -20f);
                     gl.Rotate(-90f, 1f, 0f, 0f);
@@ -330,6 +397,7 @@ namespace AssimpSample
                     #endregion
 
                     #region Golf Ball
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.GolfBall]);
                     gl.PushMatrix();
                     gl.Translate(-20f + ballPosition_x_z, 2f + ballPosition_y, 20f - ballPosition_x_z);
                     gl.Color(1f, 1f, 1f);
@@ -352,6 +420,16 @@ namespace AssimpSample
                 #endregion
            
             gl.PopMatrix();
+
+            #region Light
+            gl.PushMatrix();
+            gl.Translate(0f, 30f, -80f);
+            gl.Color(1f, 1f, 1f);
+            Sphere light = new Sphere();
+            light.CreateInContext(gl);
+            light.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
+            gl.PopMatrix();
+            #endregion
 
             #region Text
             gl.FrontFace(OpenGL.GL_CW);
