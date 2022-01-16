@@ -218,7 +218,7 @@ namespace AssimpSample
             gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, global_ambient);
 
             float[] light0pos = new float[] { 0.0f, 10.0f, -10.0f, 1.0f };
-            float[] light0ambient = new float[] { 0.5f, 0.4f, 0.4f, 1.0f };
+            float[] light0ambient = new float[] { 0.4f, 0.4f, 0.4f, 1.0f };
             float[] light0diffuse = new float[] { 0.3f, 0.3f, 0.3f, 1.0f };
             float[] light0specular = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };
 
@@ -261,7 +261,7 @@ namespace AssimpSample
         private void CreateTextures(OpenGL gl)
         {
             gl.Enable(OpenGL.GL_TEXTURE_2D);
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_REPLACE);
 
             gl.GenTextures(m_textureCount, m_textures);
             for (int i = 0; i < m_textureCount; ++i)
@@ -309,9 +309,10 @@ namespace AssimpSample
 
                     #region Hole
                     gl.PushMatrix();
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                     gl.Translate(20f, 0.01f, -20f);
                     gl.Rotate(-90f, 1f, 0f, 0f);
-                    gl.Color(0.29f, 0.15f, 0.11f);
+                    gl.Color(0.19f, 0.15f, 0.11f);
                     Disk disk = new Disk();
                     disk.NormalGeneration = Normals.Smooth;  
                     disk.Slices = 40;
@@ -350,12 +351,13 @@ namespace AssimpSample
                     gl.TexCoord(1.0f, 0.0f);
                     gl.Vertex(-ground_size, 0f, ground_size);
                     gl.End();
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                     gl.PopMatrix();
 
                 gl.MatrixMode(OpenGL.GL_MODELVIEW);
 
                 gl.Begin(OpenGL.GL_QUADS);
-                gl.Color(0.49f, 0.15f, 0.11f);
+                gl.Color(0.19f, 0.15f, 0.11f);
                 gl.Vertex(ground_size, 0f, ground_size);
                 gl.Vertex(ground_size, -3f, ground_size);
                 gl.Vertex(ground_size, -3f, -ground_size);
@@ -400,6 +402,7 @@ namespace AssimpSample
                     stick.TextureCoords = true;
                     stick.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
                     gl.PopMatrix();
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                     gl.Enable(OpenGL.GL_CULL_FACE);
                     #endregion
 
@@ -450,6 +453,7 @@ namespace AssimpSample
                     ball.CreateInContext(gl);
                     ball.TextureCoords = true;
                     ball.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
                     gl.PopMatrix();
                     #endregion
 
@@ -476,14 +480,14 @@ namespace AssimpSample
             light.Material = new SharpGL.SceneGraph.Assets.Material();
             light.Material.Emission = Color.White;
 
-            float[] light_position = { 0f, 19f, -50f, 1f};
+            float[] light_position = { 0f, 19f, -50f, 1f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, light_position);
             gl.Translate(0f, 19f, -50f);
             gl.Scale(0.5f, 0.5f, 0.5f);
 
             //light.Material.Bind(gl);
             light.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
-
+            
             gl.PopMatrix();
             #endregion
 
