@@ -25,6 +25,9 @@ namespace AssimpSample
 
         World m_world = null;
 
+        public enum BallSize { XS = 0, S, M, L, XL };
+        public enum LightDiffuse { RED = 0, YELLOW, GREEN, BLUE };
+
         #endregion Atributi
 
         #region Konstruktori
@@ -100,7 +103,36 @@ namespace AssimpSample
                     case Key.Subtract: m_world.SceneDistance += 5.0f; break;
                 }
             }
-            
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            cb1.ItemsSource = Enum.GetValues(typeof(BallSize));
+            cb2.ItemsSource = Enum.GetValues(typeof(LightDiffuse));
+            cb1.SelectedIndex = 2;
+            cb2.SelectedIndex = 0;
+        }
+
+        private void cb1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch(cb1.SelectedIndex)
+            {
+                case 0: m_world.Ball_scale = 0.70f; break;
+                case 1: m_world.Ball_scale = 0.85f; break;
+                case 2: m_world.Ball_scale = 1f; break;
+                case 3: m_world.Ball_scale = 1.15f; break;
+                case 4: m_world.Ball_scale = 1.3f; break;
+            }
+        }
+
+        private void cb2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void cb3_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

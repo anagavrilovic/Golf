@@ -33,10 +33,10 @@ namespace AssimpSample
         private bool animationActive = false;
 
         // Teksture
-        /*private enum TextureObjects { Grass = 0, YellowPlastic, GolfBall };
+        private enum TextureObjects { Grass = 0, YellowPlastic, GolfBall };
         private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
         private uint[] m_textures = null;
-        private string[] m_textureFiles = { "..//..//images//grass1.jpg", "..//..//images//plastic.jpg", "..//..//images//golfBall.jpg" };*/
+        private string[] m_textureFiles = { "..//..//images//grass1.jpg", "..//..//images//plastic.jpg", "..//..//images//golfBall.jpg" };
 
         // Scena koja se prikazuje.
         private AssimpScene m_golf_club;
@@ -61,6 +61,8 @@ namespace AssimpSample
 
         // Visina OpenGL kontrole u pikselima.
         private int m_height;
+
+        private float ball_scale = 1.0f;
 
         #endregion Atributi
 
@@ -144,6 +146,12 @@ namespace AssimpSample
             set { y_translate = value; }
         }
 
+        public float Ball_scale
+        {
+            get { return ball_scale; }
+            set { ball_scale = value; }
+        }
+
         #endregion Properties
 
         #region Konstruktori
@@ -153,7 +161,7 @@ namespace AssimpSample
             this.m_golf_club = new AssimpScene(scenePath, sceneFileName, gl);
             this.m_width = width;
             this.m_height = height;
-            //m_textures = new uint[m_textureCount];
+            m_textures = new uint[m_textureCount];
         }
 
         ~World()
@@ -206,11 +214,11 @@ namespace AssimpSample
 
         private void SetupLighting(OpenGL gl)
         {
-            float[] global_ambient = new float[] { 0.3f, 0.3f, 0.3f, 1.0f };
+            float[] global_ambient = new float[] { 0.4f, 0.4f, 0.4f, 1.0f };
             gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, global_ambient);
 
             float[] light0pos = new float[] { 0.0f, 10.0f, -10.0f, 1.0f };
-            float[] light0ambient = new float[] { 0.4f, 0.4f, 0.4f, 1.0f };
+            float[] light0ambient = new float[] { 0.5f, 0.4f, 0.4f, 1.0f };
             float[] light0diffuse = new float[] { 0.3f, 0.3f, 0.3f, 1.0f };
             float[] light0specular = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };
 
@@ -252,8 +260,8 @@ namespace AssimpSample
 
         private void CreateTextures(OpenGL gl)
         {
-            /*gl.Enable(OpenGL.GL_TEXTURE_2D);
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_REPLACE);
+            gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
 
             gl.GenTextures(m_textureCount, m_textures);
             for (int i = 0; i < m_textureCount; ++i)
@@ -278,7 +286,7 @@ namespace AssimpSample
 
                 image.UnlockBits(imageData);
                 image.Dispose();
-            }*/
+            }
         }
 
         // Iscrtavanje OpenGL kontrole.
@@ -303,7 +311,7 @@ namespace AssimpSample
                     gl.PushMatrix();
                     gl.Translate(20f, 0.01f, -20f);
                     gl.Rotate(-90f, 1f, 0f, 0f);
-                    gl.Color(0.19f, 0.15f, 0.11f);
+                    gl.Color(0.29f, 0.15f, 0.11f);
                     Disk disk = new Disk();
                     disk.NormalGeneration = Normals.Smooth;  
                     disk.Slices = 40;
@@ -312,13 +320,15 @@ namespace AssimpSample
                     disk.CreateInContext(gl);
                     disk.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
-                    gl.Translate(0f, 0f, 0.1f);
+                    /*gl.Translate(0f, 0f, 0.1f);
                     gl.Color(1f, 1f, 1f);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.YellowPlastic]);
                     disk.Slices = 40;
                     disk.InnerRadius = 0f;
                     disk.OuterRadius = 1.8f;
+                    disk.TextureCoords = true;
                     disk.CreateInContext(gl);
-                    disk.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
+                    disk.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);*/
                     gl.PopMatrix();
                     #endregion
 
@@ -327,17 +337,17 @@ namespace AssimpSample
 
                     gl.PushMatrix();
                     gl.Scale(1.1f, 1.1f, 1.1f);
-                    //gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Grass]);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Grass]);
                     gl.Begin(OpenGL.GL_QUADS);
                     gl.Color(0.19f, 0.85f, 0.26f);
                     gl.Normal(0.0f, 1.0f, 0.0f);
-                    //gl.TexCoord(0.0f, 0.0f);
+                    gl.TexCoord(0.0f, 0.0f);
                     gl.Vertex(ground_size, 0f, ground_size);
-                    //gl.TexCoord(0.0f, 1.0f);
+                    gl.TexCoord(0.0f, 1.0f);
                     gl.Vertex(ground_size, 0f, -ground_size);
-                    //gl.TexCoord(1.0f, 1.0f);
+                    gl.TexCoord(1.0f, 1.0f);
                     gl.Vertex(-ground_size, 0f, -ground_size);
-                    //gl.TexCoord(1.0f, 0.0f);
+                    gl.TexCoord(1.0f, 0.0f);
                     gl.Vertex(-ground_size, 0f, ground_size);
                     gl.End();
                     gl.PopMatrix();
@@ -345,7 +355,7 @@ namespace AssimpSample
                 gl.MatrixMode(OpenGL.GL_MODELVIEW);
 
                 gl.Begin(OpenGL.GL_QUADS);
-                gl.Color(0.19f, 0.15f, 0.11f);
+                gl.Color(0.49f, 0.15f, 0.11f);
                 gl.Vertex(ground_size, 0f, ground_size);
                 gl.Vertex(ground_size, -3f, ground_size);
                 gl.Vertex(ground_size, -3f, -ground_size);
@@ -375,7 +385,7 @@ namespace AssimpSample
 
                     #region Flag Stick
                     gl.Disable(OpenGL.GL_CULL_FACE);
-                    //gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.YellowPlastic]);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.YellowPlastic]);
                     gl.PushMatrix();
                     gl.Translate(20f, 0.01f, -20f);
                     gl.Rotate(-90f, 1f, 0f, 0f);
@@ -387,7 +397,7 @@ namespace AssimpSample
                     stick.TopRadius = 0.3f;
                     stick.Height = 40f;
                     stick.CreateInContext(gl);
-                    //stick.TextureCoords = true;
+                    stick.TextureCoords = true;
                     stick.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
                     gl.PopMatrix();
                     gl.Enable(OpenGL.GL_CULL_FACE);
@@ -411,6 +421,7 @@ namespace AssimpSample
 
                     #region Golf Tee
                     gl.PushMatrix();
+                    gl.Disable(OpenGL.GL_CULL_FACE);
                     gl.Translate(-20f, -1.8f, 20f);
                     gl.Rotate(-90f, 1f, 0f, 0f);
                     gl.Color(0.6f, 0.52f, 0.39f);
@@ -422,20 +433,22 @@ namespace AssimpSample
                     tee.Height = 3f;
                     tee.CreateInContext(gl);
                     tee.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
+                    gl.Enable(OpenGL.GL_CULL_FACE);
                     gl.PopMatrix();
                     #endregion
 
                     #region Golf Ball
-                    //gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.GolfBall]);
+                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.GolfBall]);
                     gl.PushMatrix();
                     gl.Translate(-20f + ballPosition_x_z, 2f + ballPosition_y, 20f - ballPosition_x_z);
+                    gl.Scale(ball_scale, ball_scale, ball_scale);
                     gl.Color(1f, 1f, 1f);
                     Sphere ball = new Sphere();
                     ball.NormalGeneration = Normals.Smooth;
                     ball.Slices = 40;
                     ball.Stacks = 40;
                     ball.CreateInContext(gl);
-                    //ball.TextureCoords = true;
+                    ball.TextureCoords = true;
                     ball.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
                     gl.PopMatrix();
                     #endregion
@@ -467,12 +480,9 @@ namespace AssimpSample
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, light_position);
             gl.Translate(0f, 19f, -50f);
             gl.Scale(0.5f, 0.5f, 0.5f);
-            gl.Color(1f, 1f, 1f);
 
-                //gl.PushMatrix();
-                //light.Material.Bind(gl);
-                light.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
-                //gl.PopMatrix();
+            //light.Material.Bind(gl);
+            light.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             gl.PopMatrix();
             #endregion
