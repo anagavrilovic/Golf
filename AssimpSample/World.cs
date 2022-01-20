@@ -50,7 +50,7 @@ namespace AssimpSample
         private float m_yRotation = 0f;
 
         // Udaljenost scene od kamere.
-        private float m_sceneDistance = 80f;
+        private float m_sceneDistance = 90f;
 
         // Transliranje po X osi preko tastature
         private float x_translate = 0.0f;
@@ -70,7 +70,7 @@ namespace AssimpSample
 
         private float hole_x = 20f;
 
-        private float hole_z = -5f;
+        private float hole_z = -20f;
 
         #endregion Atributi
 
@@ -364,30 +364,36 @@ namespace AssimpSample
 
                 gl.Begin(OpenGL.GL_QUADS);
                 gl.Color(0.19f, 0.15f, 0.11f);
+                gl.Normal(1.0f, 0.0f, 0.0f);
                 gl.Vertex(ground_size, 0f, ground_size);
                 gl.Vertex(ground_size, -3f, ground_size);
                 gl.Vertex(ground_size, -3f, -ground_size);
                 gl.Vertex(ground_size, 0f, -ground_size);
 
+                gl.Normal(0.0f, 0.0f, -1.0f);
                 gl.Vertex(ground_size, 0f, ground_size);
                 gl.Vertex(-ground_size, 0f, ground_size);
                 gl.Vertex(-ground_size, -3f, ground_size);
                 gl.Vertex(ground_size, -3f, ground_size);
 
+                gl.Normal(-1.0f, 0.0f, 0.0f);
                 gl.Vertex(-ground_size, 0f, ground_size);
                 gl.Vertex(-ground_size, 0f, -ground_size);
                 gl.Vertex(-ground_size, -3f, -ground_size);
                 gl.Vertex(-ground_size, -3f, ground_size);
 
+                gl.Normal(0.0f, 0.0f, 1.0f);
                 gl.Vertex(-ground_size, 0f, -ground_size);
                 gl.Vertex(ground_size, 0f, -ground_size);
                 gl.Vertex(ground_size, -3f, -ground_size);
                 gl.Vertex(-ground_size, -3f, -ground_size);
 
+                gl.Normal(0.0f, -1.0f, 0.0f);
                 gl.Vertex(ground_size, -3f, ground_size);
                 gl.Vertex(-ground_size, -3f, ground_size);
                 gl.Vertex(-ground_size, -3f, -ground_size);
                 gl.Vertex(ground_size, -3f, -ground_size);
+                gl.Normal(0.0f, 0.0f, 0.0f);
                 gl.End();
             #endregion
 
@@ -426,18 +432,24 @@ namespace AssimpSample
 
                         #region Flag
                         gl.PushMatrix();
+                        gl.Disable(OpenGL.GL_CULL_FACE);
                         gl.Translate(0.2f, 0.2f, 38f);
                         gl.Rotate(90f, 0f, 1f, 0f);
                         gl.Rotate(90f, 1f, 0f, 0f);
                         gl.Color(0.79f, 0.11f, 0.11f);
                         gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+                        gl.Normal(0.0f, 0.0f, 1.0f);
                         gl.Vertex(2.5f, 10f, 0.2f);
                         gl.Vertex(0f, 0f, 0.4f);
                         gl.Vertex(5f, 0f, 0.4f);
+                        gl.Normal(1.0f, 0.0f, 0.0f);
                         gl.Vertex(5f, 0f, 0f);
+                        gl.Normal(0.0f, 0.0f, -1.0f);
                         gl.Vertex(0f, 0f, 0f);
+                        gl.Normal(-1.0f, 0.0f, 0.0f);
                         gl.Vertex(0f, 0f, 0.4f);
                         gl.End();
+                        gl.Enable(OpenGL.GL_CULL_FACE);
                         gl.PopMatrix();
                         #endregion
 
@@ -502,7 +514,7 @@ namespace AssimpSample
             light.Material = new SharpGL.SceneGraph.Assets.Material();
             light.Material.Emission = Color.White;
 
-            float[] light_position = { 0f, 19f, -50f, 1f };
+            float[] light_position = { 0f, 25f, -70f, 1f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, light_position);
 
             float[] light0diffuse = new float[] { 1f, 1f, 1f, 1.0f };
@@ -514,7 +526,7 @@ namespace AssimpSample
 
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, light0diffuse);
 
-            gl.Translate(0f, 19f, -50f);
+            gl.Translate(0f, 25f, -70f);
             gl.Scale(0.5f, 0.5f, 0.5f);
 
             light.Material.Bind(gl);
@@ -593,7 +605,8 @@ namespace AssimpSample
                 ballPosition_y -= 0.2f;
             } else
             {
-                ballPosition_x += 1f;
+                if (hole_x <= -20f) ballPosition_x -= 1;
+                else ballPosition_x += 1f;
                 ballPosition_z = (20f - hole_z) / (-20f - hole_x) * (ballPosition_x - hole_x) + hole_z;
                 ballPosition_y -= 0.025f;
             }
