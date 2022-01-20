@@ -12,6 +12,7 @@ using SharpGL.SceneGraph.Cameras;
 using System.Windows.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
+using SharpGL.SceneGraph;
 
 namespace AssimpSample
 {
@@ -28,7 +29,8 @@ namespace AssimpSample
         private DispatcherTimer timer2;
         private float golfClubAngle = 0f;
         private bool golfClubGoingUp = true;
-        private float ballPosition_x_z = 0f;
+        private float ballPosition_x = -20.0f;
+        private float ballPosition_z = 20.0f;
         private float ballPosition_y = 0f;
         private bool animationActive = false;
 
@@ -42,10 +44,10 @@ namespace AssimpSample
         private AssimpScene m_golf_club;
 
         // Ugao rotacije sveta oko X ose.
-        private float m_xRotation = 5f;
+        private float m_xRotation = 0f;
 
         // Ugao rotacije sveta oko Y ose.
-        private float m_yRotation = 45f;
+        private float m_yRotation = 0f;
 
         // Udaljenost scene od kamere.
         private float m_sceneDistance = 80f;
@@ -64,6 +66,12 @@ namespace AssimpSample
 
         private float ball_scale = 1.0f;
 
+        private Color diffuseColor = Color.White;
+
+        private float hole_x = 20f;
+
+        private float hole_z = -5f;
+
         #endregion Atributi
 
         #region Properties
@@ -74,16 +82,34 @@ namespace AssimpSample
             set { lookAtCam = value; }
         }
 
+        public float Hole_z
+        {
+            get { return hole_z; }
+            set { hole_z = value; }
+        }
+
+        public float Hole_x
+        {
+            get { return hole_x; }
+            set { hole_x = value; }
+        }
+
         public float GolfClubAngle
         {
             get { return golfClubAngle; }
             set { golfClubAngle = value; }
         }
 
-        public float BallPosition_x_z
+        public float BallPosition_x
         {
-            get { return ballPosition_x_z; }
-            set { ballPosition_x_z = value; }
+            get { return ballPosition_x; }
+            set { ballPosition_x = value; }
+        }
+
+        public float BallPosition_z
+        {
+            get { return ballPosition_z; }
+            set { ballPosition_z = value; }
         }
 
         public float BallPosition_y
@@ -152,6 +178,12 @@ namespace AssimpSample
             set { ball_scale = value; }
         }
 
+        public Color DiffuseColor
+        {
+            get { return diffuseColor; }
+            set { diffuseColor = value; }
+        }
+
         #endregion Properties
 
         #region Konstruktori
@@ -194,7 +226,7 @@ namespace AssimpSample
             // Podesavanje inicijalnih parametara kamere
             /*lookAtCam = new LookAtCamera();
             lookAtCam.Position = new Vertex(0f, 0f, 0f);
-            lookAtCam.Target = new Vertex(0f, 0f, -10f);
+            lookAtCam.Target = new Vertex(0f, 0f, 10f);
             lookAtCam.UpVector = new Vertex(0f, 1f, 0f);
             lookAtCam.Project(gl);*/
 
@@ -254,7 +286,7 @@ namespace AssimpSample
             timer1.Tick += new EventHandler(RunGolfClubAnimation);
 
             timer2 = new DispatcherTimer();
-            timer2.Interval = TimeSpan.FromMilliseconds(7);
+            timer2.Interval = TimeSpan.FromMilliseconds(10);
             timer2.Tick += new EventHandler(RunBallAnimation);
         }
 
@@ -307,32 +339,6 @@ namespace AssimpSample
                 gl.PushMatrix();
                 gl.Translate(0f, -10f, 0f);
 
-                    #region Hole
-                    gl.PushMatrix();
-                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
-                    gl.Translate(20f, 0.01f, -20f);
-                    gl.Rotate(-90f, 1f, 0f, 0f);
-                    gl.Color(0.19f, 0.15f, 0.11f);
-                    Disk disk = new Disk();
-                    disk.NormalGeneration = Normals.Smooth;  
-                    disk.Slices = 40;
-                    disk.InnerRadius = 0f;
-                    disk.OuterRadius = 2.5f;
-                    disk.CreateInContext(gl);
-                    disk.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
-
-                    /*gl.Translate(0f, 0f, 0.1f);
-                    gl.Color(1f, 1f, 1f);
-                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.YellowPlastic]);
-                    disk.Slices = 40;
-                    disk.InnerRadius = 0f;
-                    disk.OuterRadius = 1.8f;
-                    disk.TextureCoords = true;
-                    disk.CreateInContext(gl);
-                    disk.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);*/
-                    gl.PopMatrix();
-                    #endregion
-
                 #region Grass
                 gl.MatrixMode(OpenGL.GL_TEXTURE);
 
@@ -344,11 +350,11 @@ namespace AssimpSample
                     gl.Normal(0.0f, 1.0f, 0.0f);
                     gl.TexCoord(0.0f, 0.0f);
                     gl.Vertex(ground_size, 0f, ground_size);
-                    gl.TexCoord(0.0f, 1.0f);
+                    gl.TexCoord(0.0f, 5.0f);
                     gl.Vertex(ground_size, 0f, -ground_size);
-                    gl.TexCoord(1.0f, 1.0f);
+                    gl.TexCoord(5.0f, 5.0f);
                     gl.Vertex(-ground_size, 0f, -ground_size);
-                    gl.TexCoord(1.0f, 0.0f);
+                    gl.TexCoord(5.0f, 0.0f);
                     gl.Vertex(-ground_size, 0f, ground_size);
                     gl.End();
                     gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
@@ -383,42 +389,58 @@ namespace AssimpSample
                 gl.Vertex(-ground_size, -3f, -ground_size);
                 gl.Vertex(ground_size, -3f, -ground_size);
                 gl.End();
-                #endregion
+            #endregion
 
-                    #region Flag Stick
-                    gl.Disable(OpenGL.GL_CULL_FACE);
-                    gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.YellowPlastic]);
+                    #region Hole
                     gl.PushMatrix();
-                    gl.Translate(20f, 0.01f, -20f);
-                    gl.Rotate(-90f, 1f, 0f, 0f);
-                    gl.Color(1f, 1f, 1f);
-                    Cylinder stick = new Cylinder();
-                    stick.NormalGeneration = Normals.Smooth;
-                    stick.Slices = 20;
-                    stick.BaseRadius = 0.3f;
-                    stick.TopRadius = 0.3f;
-                    stick.Height = 40f;
-                    stick.CreateInContext(gl);
-                    stick.TextureCoords = true;
-                    stick.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
-                    gl.PopMatrix();
                     gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
-                    gl.Enable(OpenGL.GL_CULL_FACE);
-                    #endregion
+                    gl.Translate(hole_x, 0.01f, hole_z);
+                    gl.Rotate(-90f, 1f, 0f, 0f);
+                    gl.Color(0.19f, 0.15f, 0.11f);
+                    Disk disk = new Disk();
+                    disk.NormalGeneration = Normals.Smooth;
+                    disk.Slices = 40;
+                    disk.InnerRadius = 0f;
+                    disk.OuterRadius = 2.5f;
+                    disk.CreateInContext(gl);
+                    disk.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
-                    #region Flag
-                    gl.PushMatrix();
-                    gl.Translate(20.2f, 38f, -20.2f);
-                    gl.Rotate(-90f, 0f, 0f, 1f);
-                    gl.Color(0.79f, 0.11f, 0.11f);
-                    gl.Begin(OpenGL.GL_TRIANGLE_FAN);
-                    gl.Vertex(2.5f, 10f, 0.2f);
-                    gl.Vertex(0f, 0f, 0.4f);
-                    gl.Vertex(5f, 0f, 0.4f);
-                    gl.Vertex(5f, 0f, 0f);
-                    gl.Vertex(0f, 0f, 0f);
-                    gl.Vertex(0f, 0f, 0.4f);
-                    gl.End();
+                        #region Flag Stick
+                        gl.Disable(OpenGL.GL_CULL_FACE);
+                        gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.YellowPlastic]);
+                        gl.PushMatrix();
+                        gl.Color(1f, 1f, 1f);
+                        Cylinder stick = new Cylinder();
+                        stick.NormalGeneration = Normals.Smooth;
+                        stick.Slices = 20;
+                        stick.BaseRadius = 0.3f;
+                        stick.TopRadius = 0.3f;
+                        stick.Height = 40f;
+                        stick.CreateInContext(gl);
+                        stick.TextureCoords = true;
+                        stick.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
+                        gl.PopMatrix();
+                        gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
+                        gl.Enable(OpenGL.GL_CULL_FACE);
+                        #endregion
+
+                        #region Flag
+                        gl.PushMatrix();
+                        gl.Translate(0.2f, 0.2f, 38f);
+                        gl.Rotate(90f, 0f, 1f, 0f);
+                        gl.Rotate(90f, 1f, 0f, 0f);
+                        gl.Color(0.79f, 0.11f, 0.11f);
+                        gl.Begin(OpenGL.GL_TRIANGLE_FAN);
+                        gl.Vertex(2.5f, 10f, 0.2f);
+                        gl.Vertex(0f, 0f, 0.4f);
+                        gl.Vertex(5f, 0f, 0.4f);
+                        gl.Vertex(5f, 0f, 0f);
+                        gl.Vertex(0f, 0f, 0f);
+                        gl.Vertex(0f, 0f, 0.4f);
+                        gl.End();
+                        gl.PopMatrix();
+                        #endregion
+
                     gl.PopMatrix();
                     #endregion
 
@@ -443,7 +465,7 @@ namespace AssimpSample
                     #region Golf Ball
                     gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.GolfBall]);
                     gl.PushMatrix();
-                    gl.Translate(-20f + ballPosition_x_z, 2f + ballPosition_y, 20f - ballPosition_x_z);
+                    gl.Translate(ballPosition_x, 2f + ballPosition_y, ballPosition_z);
                     gl.Scale(ball_scale, ball_scale, ball_scale);
                     gl.Color(1f, 1f, 1f);
                     Sphere ball = new Sphere();
@@ -482,12 +504,24 @@ namespace AssimpSample
 
             float[] light_position = { 0f, 19f, -50f, 1f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, light_position);
+
+            float[] light0diffuse = new float[] { 1f, 1f, 1f, 1.0f };
+            if (diffuseColor == Color.White) light0diffuse = new float[] { 1f, 1f, 1f, 1.0f };
+            else if (diffuseColor == Color.Red) light0diffuse = new float[] { 1f, 0f, 0f, 1.0f };
+            else if (diffuseColor == Color.Yellow) light0diffuse = new float[] { 1f, 1f, 0f, 1.0f };
+            else if (diffuseColor == Color.Green) light0diffuse = new float[] { 0f, 1f, 0f, 1.0f };
+            else if (diffuseColor == Color.Blue) light0diffuse = new float[] { 0f, 0f, 1f, 1.0f };
+
+            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, light0diffuse);
+
             gl.Translate(0f, 19f, -50f);
             gl.Scale(0.5f, 0.5f, 0.5f);
 
-            //light.Material.Bind(gl);
+            light.Material.Bind(gl);
             light.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
-            
+
+            light.Material.Emission = Color.Black;
+            light.Material.Bind(gl);
             gl.PopMatrix();
             #endregion
 
@@ -527,7 +561,7 @@ namespace AssimpSample
 
         public void RunGolfClubAnimation(object sender, EventArgs e)
         {
-            if (golfClubAngle == 35f) golfClubGoingUp = false;
+            if (golfClubAngle >= 39) golfClubGoingUp = false;
             if (golfClubAngle == 0f) golfClubGoingUp = true;
 
             if (golfClubAngle == -1f)
@@ -535,10 +569,11 @@ namespace AssimpSample
                 timer1.Stop();
                 timer2.Start();
                 golfClubGoingUp = true;
+                golfClubAngle = 0f;
             }
 
-            if (golfClubGoingUp) golfClubAngle += 1f;
-            if (!golfClubGoingUp) golfClubAngle -= 2f;
+            if (golfClubGoingUp) golfClubAngle += 3f;
+            if (!golfClubGoingUp) golfClubAngle -= 4f;
         }
 
         public void RunBallAnimation(object sender, EventArgs e)
@@ -548,17 +583,19 @@ namespace AssimpSample
                 timer2.Stop();
                 AnimationActive = false;
 
-                ballPosition_x_z = -0.45f;
+                ballPosition_x = -21.0f;
+                ballPosition_z = 20.0f;
                 ballPosition_y = 0f;
             }
 
-            if (ballPosition_x_z >= 39f)
+            if (ballPosition_x >= hole_x && ballPosition_z >= hole_z)
             {
                 ballPosition_y -= 0.2f;
             } else
             {
-                ballPosition_x_z += 0.5f;
-                ballPosition_y -= 0.01f;
+                ballPosition_x += 1f;
+                ballPosition_z = (20f - hole_z) / (-20f - hole_x) * (ballPosition_x - hole_x) + hole_z;
+                ballPosition_y -= 0.025f;
             }
         }
 

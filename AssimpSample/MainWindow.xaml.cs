@@ -26,7 +26,7 @@ namespace AssimpSample
         World m_world = null;
 
         public enum BallSize { XS = 0, S, M, L, XL };
-        public enum LightDiffuse { RED = 0, YELLOW, GREEN, BLUE };
+        public enum LightDiffuse { WHITE = 0, RED, YELLOW, GREEN, BLUE };
 
         #endregion Atributi
 
@@ -90,17 +90,36 @@ namespace AssimpSample
                 switch (e.Key)
                 {
                     case Key.F2: this.Close(); break;
+
                     case Key.E: 
                         if (m_world.RotationX > 0) m_world.RotationX -= 5.0f;
                         break;
+
                     case Key.D: 
                         if (m_world.RotationX < 90) m_world.RotationX += 5.0f; 
                         break;
+
                     case Key.S: m_world.RotationY -= 5.0f; break;
                     case Key.F: m_world.RotationY += 5.0f; break;
                     case Key.V: m_world.StartAnimation(); break;
                     case Key.Add: m_world.SceneDistance -= 5.0f; break;
                     case Key.Subtract: m_world.SceneDistance += 5.0f; break;
+
+                    case Key.Left:
+                        if (m_world.Hole_x > -32) m_world.Hole_x -= 2;
+                        break;
+
+                    case Key.Right:
+                        if (m_world.Hole_x < 32) m_world.Hole_x += 2;
+                        break;
+
+                    case Key.Up:
+                        if (m_world.Hole_z > -32) m_world.Hole_z -= 2;
+                        break;
+
+                    case Key.Down:
+                        if (m_world.Hole_z < 32) m_world.Hole_z += 2;
+                        break;
                 }
             }
         }
@@ -127,12 +146,14 @@ namespace AssimpSample
 
         private void cb2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-        }
-
-        private void cb3_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            switch (cb2.SelectedIndex)
+            {
+                case 0: m_world.DiffuseColor = System.Drawing.Color.White; break;
+                case 1: m_world.DiffuseColor = System.Drawing.Color.Red; break;
+                case 2: m_world.DiffuseColor = System.Drawing.Color.Yellow; break;
+                case 3: m_world.DiffuseColor = System.Drawing.Color.Green; break;
+                case 4: m_world.DiffuseColor = System.Drawing.Color.Blue; break;
+            }
         }
     }
 }
