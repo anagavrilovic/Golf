@@ -44,10 +44,10 @@ namespace AssimpSample
         private AssimpScene m_golf_club;
 
         // Ugao rotacije sveta oko X ose.
-        private float m_xRotation = 0f;
+        private float m_xRotation = 5f;
 
         // Ugao rotacije sveta oko Y ose.
-        private float m_yRotation = 0f;
+        private float m_yRotation = 45f;
 
         // Udaljenost scene od kamere.
         private float m_sceneDistance = 90f;
@@ -225,10 +225,11 @@ namespace AssimpSample
 
             // Podesavanje inicijalnih parametara kamere
             /*lookAtCam = new LookAtCamera();
-            lookAtCam.Position = new Vertex(0f, 0f, 0f);
+            lookAtCam.Position = new Vertex(0f, 0f, -80f);
             lookAtCam.Target = new Vertex(0f, 0f, 10f);
-            lookAtCam.UpVector = new Vertex(0f, 1f, 0f);
-            lookAtCam.Project(gl);*/
+            lookAtCam.UpVector = new Vertex(0f, 1f, 0f);*/
+            //lookAtCam.Project(gl);
+            gl.LookAt(0f, 0f, -80f, 0f, 0f, -10f, 0f, 1f, 0f);
 
             // Definisanje tajmera za animaciju
             CreateTimers();
@@ -249,7 +250,7 @@ namespace AssimpSample
             float[] global_ambient = new float[] { 0.4f, 0.4f, 0.4f, 1.0f };
             gl.LightModel(OpenGL.GL_LIGHT_MODEL_AMBIENT, global_ambient);
 
-            float[] light0pos = new float[] { 0.0f, 10.0f, -10.0f, 1.0f };
+            float[] light0pos = { 0f, 25f, -70f, 1f };
             float[] light0ambient = new float[] { 0.4f, 0.4f, 0.4f, 1.0f };
             float[] light0diffuse = new float[] { 0.3f, 0.3f, 0.3f, 1.0f };
             float[] light0specular = new float[] { 0.6f, 0.6f, 0.6f, 1.0f };
@@ -326,7 +327,7 @@ namespace AssimpSample
         {
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
-            //lookAtCam.Project(gl);
+            gl.LookAt(0f, 0f, 0f, 0f, 0f, -10f, 0f, 1f, 0f);
 
             float ground_size = 35f;
 
@@ -600,7 +601,7 @@ namespace AssimpSample
                 ballPosition_y = 0f;
             }
 
-            if (ballPosition_x >= hole_x && ballPosition_z >= hole_z)
+            if (ballPosition_x == hole_x && ballPosition_z == hole_z)
             {
                 ballPosition_y -= 0.2f;
             } else

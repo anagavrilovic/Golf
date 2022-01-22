@@ -105,19 +105,19 @@ namespace AssimpSample
                     case Key.Add: m_world.SceneDistance -= 5.0f; break;
                     case Key.Subtract: m_world.SceneDistance += 5.0f; break;
 
-                    case Key.Left:
+                    case Key.J:
                         if (m_world.Hole_x > -32) m_world.Hole_x -= 2;
                         break;
 
-                    case Key.Right:
+                    case Key.L:
                         if (m_world.Hole_x < 32) m_world.Hole_x += 2;
                         break;
 
-                    case Key.Up:
+                    case Key.I:
                         if (m_world.Hole_z > -32) m_world.Hole_z -= 2;
                         break;
 
-                    case Key.Down:
+                    case Key.K:
                         if (m_world.Hole_z < 32) m_world.Hole_z += 2;
                         break;
                 }
