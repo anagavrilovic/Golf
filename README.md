@@ -1,11 +1,11 @@
-# GolfScene
+# Golf Scene
 Student project for Computer Graphics course on Faculty of Technical Sciences
 
 Golf scene using SharpGL, a C# version of OpenGL.
 Learned basics of Computer Graphics like:
 - Primitives
 - Quadric objects
-- ModelView transformations (translation, scaling and rotation)
+- ModelView transformations (translation, scaling, and rotation)
 - Culling and z-buffering
 - Rendering mechanisms
 - Projections
