@@ -17,3 +17,5 @@ Learned basics of Computer Graphics like:
 - Light model and types of lighting
 - Textures
 - Loading 3D models with textures into the scene
+
+
